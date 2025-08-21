@@ -1,1 +1,8 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Siemreap&display=swap');
+
+.siemreap-regular {
+    font-family: "Siemreap", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }

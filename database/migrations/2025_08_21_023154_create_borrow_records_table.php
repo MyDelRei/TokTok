@@ -21,10 +21,13 @@ return new class extends Migration
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
 
 
+
             $table->integer('quantity')->default(1);
             $table->enum('borrow_status', ['checked_out', 'checked_in', 'over_due'])->default('check_out');
             $table->date('check_out_date');
             $table->date('check_in_date')->nullable();
+
+            // find fee column ផាកវិន័យ ( data type double )
             $table->timestamps();
         });
     }
