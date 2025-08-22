@@ -23,6 +23,12 @@ class User extends Authenticatable
                 } else {
                     $user->user_id = 10001; // first user
                 }
+                // phone manage
+                if (!strpos($user->phone, '+855') === 0) {
+                    $user->phone = '+855' . $user->phone; 
+                }
+                
+
             }
         });
     }
