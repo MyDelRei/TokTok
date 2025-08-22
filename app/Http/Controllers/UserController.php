@@ -5,28 +5,46 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 class UserController extends Controller
 {
-    
+
     public function userList(Request $request)
-    {
-        $query = User::query();
+{
+    $query = User::query();
 
-        if ($request->filled('q')) {
-            $search = $request->q;
-            $query->where(function($q) use ($search) {
-                $q->where('full_name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
-            });
-        }
-
-        $users = $query->paginate(8)->withQueryString();
-
-        return view('users.userList', compact('users'));
-
+    if ($request->filled('q')) {
+        $search = $request->q;
+        $query->where(function($q) use ($search) {
+            $q->where('full_name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%");
+        });
     }
+
+    $users = $query->paginate(8)->withQueryString();
+
+    // Create a generic delete confirmation that will be triggered by data-confirm-delete
+    $deleteConfig = [
+        'title' => 'Are you sure to delete this user?',
+        'html' => '<div style="text-align: left;">
+                    <p style="margin-bottom: 10px; text-align: center;">You are will delete the following user</p>
+                </div>',
+        'icon' => 'warning',
+        'showCancelButton' => true,
+        'confirmButtonColor' => '#830000ff',
+        'cancelButtonColor' => '#969696ff',
+        'confirmButtonText' => 'Yes, Delete!',
+        'cancelButtonText' => 'Cancel',
+        'reverseButtons' => true,
+        'focusCancel' => true
+    ];
+
+    session(['alert.delete' => json_encode($deleteConfig)]);
+
+    return view('users.userList', compact('users'));
+}
+
 
     public function create()
     {
@@ -75,11 +93,45 @@ class UserController extends Controller
         return redirect()->route('users.userList');
     }
 
-    public function destroy(User $user)
+     public function destroy(User $user)
     {
+        $userName = $user->full_name;
         $user->delete();
 
-        Alert::success('Success', 'User deleted successfully');
+        Alert::success('Success!', "Deleted successfully!")
+             ->persistent(false)
+             ->autoClose(2000);
+
         return redirect()->route('users.userList');
+    }
+    
+    public function printPreview()
+    {
+        $users = User::all();
+        return view('users.print-preview', compact('users'));
+    }
+
+    public function printPdf(Request $request)
+    {
+        $printOption = $request->input('print_option', 'all');
+        $customLimit = $request->input('custom_limit', 10);
+
+        $query = User::query();
+
+        switch ($printOption) {
+            case 'custom':
+                $users = $query->limit($customLimit)->get();
+                break;
+            case 'all':
+            default:
+                $users = $query->get();
+                break;
+        }
+
+        $pdf = Pdf::loadView('users.pdf', compact('users'))
+                ->setPaper('a4', 'portrait');
+                
+
+        return $pdf->download('users-' . $printOption . '.pdf');
     }
 }

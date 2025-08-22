@@ -9,7 +9,7 @@
                   <h1 class="text-2xl font-bold text-gray-900 mb-4 siemreap-regular">បន្ថែមសមាជិក</h1>
                   <p class="text-md text-gray-500 siemreap-regular">បំពេញព័ត៌មាន</p>
                </div>
-               <a href="{{ route('users.userList') }}" class="px-6 py-2.5 rounded-full bg-[#1E3B2D] text-white font-medium hover:bg-[#2e5940] transition duration-200 inline-flex items-center space-x-2">
+               <a href="{{ route('users.userList') }}" class="px-6 py-2.5 rounded-full bg-green-900 text-white font-medium hover:bg-green-800 transition duration-200 inline-flex items-center space-x-2">
                   <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                      <circle cx="12" cy="12" r="3"></circle>
@@ -47,7 +47,7 @@
                   </div>
 
                   <div class="flex items-center space-x-4 pt-4">
-                     <button type="submit" class="inline-flex justify-center items-center py-2.5 px-6 space-x-2 border border-transparent text-sm font-medium rounded-full text-white bg-[#1E3B2D] hover:bg-[#2e5940] focus:outline-none transition duration-200 cursor-pointer">
+                     <button type="submit" class="inline-flex justify-center items-center py-2.5 px-6 space-x-2 border border-transparent text-sm font-medium rounded-full text-white bg-green-900 hover:bg-green-800 focus:outline-none transition duration-200 cursor-pointer">
                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                               <path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7zM7 7h7v2H7V7zm10 10H7v-2h10v2zm0-4H7v-2h10v2z"/>
                         </svg>

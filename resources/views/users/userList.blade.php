@@ -30,12 +30,10 @@
 
                     <span class="siemreap-regular">បន្ថែមសមាជិក</span>
                 </a>
-                <button class="bg-white px-5 py-2 border border-gray-300 rounded-3xl text-gray-700 hover:bg-gray-100 transition duration-200 siemreap-regular flex gap-2">
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7zM7 7h7v2H7V7zm10 10H7v-2h10v2zm0-4H7v-2h10v2z"/>
-                    </svg>
-                    ព្រីនចេញ
-                </button>
+                <a href="{{ route('users.print.preview') }}"
+                    class="bg-white px-5 py-2 border border-gray-300 rounded-3xl text-gray-700 hover:bg-gray-100 transition duration-200 siemreap-regular">
+                        ព្រីនជា PDF
+                </a>
             </div>
         </div>
         <table class="w-full mt-6 border-collapse shadow-sm rounded-xl overflow-hidden">
@@ -59,28 +57,22 @@
                         <div class="flex items-center space-x-4">
                             <a href="{{ route('users.edit', $user) }}" class="flex gap-2 text-green-800 hover:text-green-900 transition-colors duration-200 cursor-pointer bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded-[8px] siemreap-regular" title="Edit User">
                               <p>កែទិន្នន័យ</p>
-                              <svg 
-                                 class="text-green-800 h-5 w-4 fill-current" 
-                                 xmlns="http://www.w3.org/2000/svg" 
-                                 viewBox="0 0 24 24" 
-                                 fill="currentColor">
-                                 <path d="M17 3a2.85 2.85 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                              </svg>
+                              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9"/>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                    </svg>
                             </a>
-                            <form action="{{ route('users.destroy', $user) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="flex gap-2 text-white transition-colors duration-200 cursor-pointer bg-red-800 hover:bg-red-700 px-2 py-1 rounded-[8px] siemreap-regular" title="Delete User">
+                             <a href="{{ route('users.destroy', $user) }}" 
+                                data-confirm-delete="true"
+                                data-user-name="{{ $user->full_name }}"
+                                data-user-id="{{ $user->user_id }}"
+                                class="flex gap-2 text-white transition-colors duration-200 cursor-pointer bg-red-800 hover:bg-red-700 px-2 py-1 rounded-[8px] siemreap-regular" 
+                                title="Delete User">
                                     លុបចោល
-                                    <svg 
-                                       class="text-white h-5 w-4 fill-current" 
-                                       xmlns="http://www.w3.org/2000/svg" 
-                                       viewBox="0 0 24 24" 
-                                       fill="currentColor">
-                                       <path d="M9 2h6a2 2 0 0 1 2 2v2h4v2H3V6h4V4a2 2 0 0 1 2-2zm1 4h4V4h-4v2zm-4 4h12l-1 10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L6 10zm4 2v6h2v-6h-2zm4 0v6h2v-6h-2z"/>
+                                    <svg class="text-white h-5 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 2h6a2 2 0 0 1 2 2v2h4v2H3V6h4V4a2 2 0 0 1 2-2zm1 4h4V4h-4v2zm-4 4h12l-1 10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L6 10zm4 2v6h2v-6h-2zm4 0v6h2v-6h-2z"/>
                                     </svg>
-
-                                </button>
-                            </form>
+                                </a>
                         </div>
                     </td>
                 </tr>
