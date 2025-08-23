@@ -19,4 +19,9 @@ class Author extends Model
     {
         return $this->hasMany(Book::class, 'author_id');
     }
+
+    public function getNameAttribute()
+    {
+        return $this->author_name;
+    }
 }

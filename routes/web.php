@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -29,10 +30,25 @@ Route::middleware([RoleMiddleware::class.':admin'])->group(function () {
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
         
     });
+
+    Route::prefix('books')->name('books.')->group(function () {
+        Route::get('/', [BookController::class, 'bookList'])->name('bookList');
+        Route::get('/create', [BookController::class, 'create'])->name('create');
+        Route::post('/store', [BookController::class, 'store'])->name('store');
+    
+        // Show the edit form
+        Route::get('/{book}/edit', [BookController::class, 'edit'])->name('edit');
+        // Update the book stock
+        Route::put('/{book}', [BookController::class, 'update'])->name('update');
+        // Delete the book
+        Route::delete('/{book}', [BookController::class, 'destroy'])->name('destroy');
+    });
+    
 });
 
 
 Route::middleware([RoleMiddleware::class.':member'])->group(function () {
     Route::view('/member', 'member')->name('member');
+   
 
 });

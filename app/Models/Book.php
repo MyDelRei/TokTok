@@ -14,13 +14,18 @@ class Book extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Category::class, 'category_id', 'category_id');
     }
 
     public function author()
     {
-        return $this->belongsTo(Author::class, 'author_id');
+        return $this->belongsTo(Author::class, 'author_id','author_id');
     }
+    public function authors()
+    {
+        return $this->belongsToMany(Author::class, 'author_book', 'book_id', 'author_id');
+    }
+
 
     public function borrowRecords()
     {
