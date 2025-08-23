@@ -59,3 +59,21 @@ jobs:
 
     - name: PHPStan
       run: vendor/bin/phpstan analyse || true
+          # 6️⃣ Generate app key
+    - name: Generate app key
+      run: php artisan key:generate
+
+    # 6️⃣.5 Create SQLite database file for testing
+    - name: Create SQLite database
+      run: |
+        mkdir -p database
+        touch database/database.sqlite
+
+    # 7️⃣ Run migrations for testing
+    - name: Run migrations
+      run: php artisan migrate --env=testing --no-interaction
+
+    # 8️⃣ Run Laravel tests
+    - name: Run PHPUnit Tests
+      run: vendor/bin/phpunit --coverage-text
+
