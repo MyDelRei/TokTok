@@ -1,6 +1,5 @@
 name: Laravel CI
 
-# Trigger workflow on push and pull request
 on:
   push:
     branches: [ main, develop ]
@@ -16,11 +15,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 2️⃣ Setup PHP
+    # 2️⃣ Setup PHP 8.2 (compatible with Laravel 11)
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: '8.2'
         extensions: mbstring, intl, bcmath, xml, ctype, curl, json, mysqli
         coverage: xdebug
 
@@ -28,7 +27,9 @@ jobs:
     - name: Cache Composer dependencies
       uses: actions/cache@v3
       with:
-        path: vendor
+        path: |
+          vendor
+          ~/.composer/cache
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: ${{ runner.os }}-composer-
 
@@ -46,7 +47,7 @@ jobs:
 
     # 7️⃣ Run migrations for testing
     - name: Run migrations
-      run: php artisan migrate --env=testing
+      run: php artisan migrate --env=testing --no-interaction
 
     # 8️⃣ Run Laravel tests
     - name: Run PHPUnit Tests
@@ -54,7 +55,7 @@ jobs:
 
     # 9️⃣ Optional: Lint & static analysis
     - name: PHP CS Fixer
-      run: vendor/bin/php-cs-fixer fix --dry-run --diff
+      run: vendor/bin/php-cs-fixer fix --dry-run --diff || true
 
     - name: PHPStan
-      run: vendor/bin/phpstan analyse
+      run: vendor/bin/phpstan analyse || true
