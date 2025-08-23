@@ -25,16 +25,16 @@ class UserController extends Controller
         $users = $query->paginate(8)->withQueryString();
 
         $deleteConfig = [
-            'title' => 'Are you sure to delete this user?',
+            'title' => 'តើអ្នកប្រាកដទេនឹងលុបសមាជិកនេះ?',
             'html' => '<div style="text-align: left;">
-                        <p style="margin-bottom: 10px; text-align: center;">You will delete the following user</p>
+                        <p style="margin-bottom: 10px; text-align: center;">អ្នកកំពុងត្រៀមលុបសមាជិកខាងក្រោម</p>
                     </div>',
             'icon' => 'warning',
             'showCancelButton' => true,
             'confirmButtonColor' => '#830000ff',
             'cancelButtonColor' => '#969696ff',
-            'confirmButtonText' => 'Yes, Delete!',
-            'cancelButtonText' => 'Cancel',
+            'confirmButtonText' => 'បាទ/ចាស, លុប!',
+            'cancelButtonText' => 'បោះបង់',
             'reverseButtons' => true,
             'focusCancel' => true
         ];
