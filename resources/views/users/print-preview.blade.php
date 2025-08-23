@@ -22,22 +22,22 @@
                         </label>
                         <div class="space-y-2">
                             <label class="flex items-center">
-                                <input type="radio" name="print_option" value="all" checked 
+                                <input type="radio" name="print_option" value="all" checked
                                        class="mr-2 text-green-600 focus:ring-green-500">
                                 <span class="siemreap-regular">ព្រីនទាំងអស់ ({{ $users->count() }} សមាជិក)</span>
                             </label>
-                            <!-- <label class="flex items-center">
-                                <input type="radio" name="print_option" value="5" class="mr-2 text-green-600 focus:ring-green-500">
-                                <span class="siemreap-regular">ព្រីន 5 ដំបូង</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="radio" name="print_option" value="10" class="mr-2 text-green-600 focus:ring-green-500">
-                                <span class="siemreap-regular">ព្រីន 10 ដំបូង</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="radio" name="print_option" value="20" class="mr-2 text-green-600 focus:ring-green-500">
-                                <span class="siemreap-regular">ព្រីន 20 ដំបូង</span>
-                            </label> -->
+{{--                           <label class="flex items-center">--}}
+{{--                                <input type="radio" name="print_option" value="5" class="mr-2 text-green-600 focus:ring-green-500">--}}
+{{--                                <span class="siemreap-regular">ព្រីន 5 ដំបូង</span>--}}
+{{--                            </label>--}}
+{{--                            <label class="flex items-center">--}}
+{{--                                <input type="radio" name="print_option" value="10" class="mr-2 text-green-600 focus:ring-green-500">--}}
+{{--                                <span class="siemreap-regular">ព្រីន 10 ដំបូង</span>--}}
+{{--                            </label>--}}
+{{--                            <label class="flex items-center">--}}
+{{--                                <input type="radio" name="print_option" value="20" class="mr-2 text-green-600 focus:ring-green-500">--}}
+{{--                                <span class="siemreap-regular">ព្រីន 20 ដំបូង</span>--}}
+{{--                            </label> --}}
                             <label class="flex items-center">
                                 <input type="radio" name="print_option" value="custom" class="mr-2 text-green-600 focus:ring-green-500">
                                 <span class="siemreap-regular">ព្រីនតាមចំនួនដែលកំណត់</span>
@@ -67,9 +67,9 @@
 
                 <!-- Action Buttons -->
                 <div class="flex justify-between items-center mt-6 pt-4 border-t">
-                    <a href="{{ route('users.userList') }}" 
+                    <a href="{{ route('users.userList') }}"
                        class="px-4 py-2 text-gray-600 bg-gray-200 rounded-3xl    hover:bg-gray-300 transition duration-200 siemreap-regular">
-                        បោះបង់​    
+                        បោះបង់
                     </a>
                     <div class="flex space-x-3">
                         <button type="button" id="previewBtn"
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updatePreview() {
         if (!users || users.length === 0) {
-            previewContent.innerHTML = `<p class="text-gray-500 text-sm">គ្មានទិន្នន័យ</p>`;
+            previewContent.innerHTML = `<p class="text-gray-500 text-sm siemreap-regular">គ្មានទិន្នន័យ</p>`;
             return;
         }
 
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
 
         previewUsers.forEach(user => {
-            html += `<div class="flex justify-between text-xs bg-white p-2 rounded">
+            html += `<div class="flex justify-between text-xs bg-white p-2 rounded siemreap-regular">
                         <span>#${user.user_id} - ${user.full_name}</span>
                         <span>${user.email}</span>
                      </div>`;

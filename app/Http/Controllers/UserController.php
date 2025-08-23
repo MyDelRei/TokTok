@@ -24,11 +24,10 @@ class UserController extends Controller
 
         $users = $query->paginate(8)->withQueryString();
 
-        // Create a generic delete confirmation that will be triggered by data-confirm-delete
         $deleteConfig = [
             'title' => 'Are you sure to delete this user?',
             'html' => '<div style="text-align: left;">
-                        <p style="margin-bottom: 10px; text-align: center;">You are will delete the following user</p>
+                        <p style="margin-bottom: 10px; text-align: center;">You will delete the following user</p>
                     </div>',
             'icon' => 'warning',
             'showCancelButton' => true,
@@ -51,13 +50,18 @@ class UserController extends Controller
         return view('users.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'required|string|min:10',
-        ]);
+            'phone' => 'required|string|min:9',
+        ],
+        [
+        'phone.min' => 'លេខទូរស័ព្ទត្រូវតែមានយ៉ាងតិច ៩ តួអក្សរ',
+            'email.unique'=>'អុីម៉ែលត្រូវបានប្រើប្រាស់រួចហើយ'
+    ]);
+
 
         User::create([
             'full_name' => $validated['full_name'],
@@ -67,7 +71,11 @@ class UserController extends Controller
         ]);
 
         Alert::success('Success', 'User created successfully');
-        return redirect()->route('users.userList');
+        return redirect()->route('users.userList')->with('alert.config', json_encode([
+            'title' => 'សមាជិកត្រូវបានបន្ថែម!',
+            'icon' => 'success',
+            'confirmButtonText' => 'យល់ព្រម'
+        ]));
     }
 
     public function show(User $user)
@@ -85,12 +93,18 @@ class UserController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'required|string|min:10'
+            'phone' => 'required|string|min:9'
+        ],[
+            'phone'=>'លេខទូរស័ព្ទត្រូវតែមានយ៉ាងតិច ៩ តួអក្សរ'
         ]);
         $user->update($validated);
 
         Alert::success('Success', 'User updated successfully');
-        return redirect()->route('users.userList');
+        return redirect()->route('users.userList')->with('alert.config', json_encode([
+            'title' => 'សមាជិកត្រូវបានកែប្រែ!',
+            'icon' => 'success',
+            'confirmButtonText' => 'យល់ព្រម'
+        ]));
     }
 
      public function destroy(User $user)
@@ -104,7 +118,9 @@ class UserController extends Controller
 
         return redirect()->route('users.userList');
     }
-    
+
+    //== == == Print to pdf function == == ==
+
     public function printPreview()
     {
         $users = User::all();
@@ -129,8 +145,7 @@ class UserController extends Controller
         }
 
         $pdf = Pdf::loadView('users.pdf', compact('users'))
-                ->setPaper('a4', 'portrait');
-                
+            ->setPaper('a4', 'portrait');
 
         return $pdf->download('users-' . $printOption . '.pdf');
     }

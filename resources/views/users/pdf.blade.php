@@ -4,6 +4,15 @@
     <meta charset="utf-8">
     <title>User List Report</title>
     <style>
+        @font-face {
+            font-family: 'siemreap-regular';
+            src: url('{{ public_path('fonts/Siemreap-Regular.ttf') }}');
+        }
+        .siemreap-regular {
+            font-family: "siemreap-regular", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
         .header {
             text-align: center;
             margin-bottom: 30px;
