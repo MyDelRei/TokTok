@@ -26,14 +26,14 @@
                         <label for="full_name" class="block text-md text-gray-700 mb-1 siemreap-regular">ឈ្មោះ</label>
                         <input type="text" name="full_name" id="full_name" value="{{ old('full_name') }}"
                                  placeholder="ឈ្មោះ"
-                                 class="w-full bg-white border-gray-300 rounded-3xl py-2 px-4 shadow-sm focus:outline-none focus:border-[#1E3B2D] focus:ring-1 focus:ring-[#1E3B2D] transition duration-200 siemreap-regular" required>
+                                 class="w-full bg-white border-gray-300 rounded-3xl py-2 px-4 shadow-sm focus:outline-none focus:border-[#1E3B2D] focus:ring-1 focus:ring-[#1E3B2D] transition duration-200 siemreap-regular" >
                         @error('full_name') <p class="mt-1 text-red-600 text-sm">{{ $message }}</p> @enderror
                      </div>
                      <div>
                         <label for="email" class="block text-md text-gray-700 mb-1 siemreap-regular">អ៊ីមែល</label>
                         <input type="email" name="email" id="email" value="{{ old('email') }}"
                                  placeholder="អ៊ីមែល"
-                                 class="w-full bg-white border-gray-300 rounded-3xl py-2 px-4 shadow-sm focus:outline-none focus:border-[#1E3B2D] focus:ring-1 focus:ring-[#1E3B2D] transition duration-200 siemreap-regular" required>
+                                 class="w-full bg-white border-gray-300 rounded-3xl py-2 px-4 shadow-sm focus:outline-none focus:border-[#1E3B2D] focus:ring-1 focus:ring-[#1E3B2D] transition duration-200 siemreap-regular" >
                         @error('email') <p class="mt-1 text-red-600 text-sm">{{ $message }}</p> @enderror
                      </div>
                   </div>
@@ -42,7 +42,7 @@
                      <label for="phone" class="block text-md text-gray-700 mb-1 siemreap-regular">លេខទូរស័ព្ទ</label>
                      <input type="tel" name="phone" id="phone" value="{{ old('phone') }}"
                            placeholder="លេខទូរស័ព្ទ"
-                           class="w-full bg-white border-gray-300 rounded-3xl py-2 px-4 shadow-sm focus:outline-none focus:border-[#1E3B2D] focus:ring-1 focus:ring-[#1E3B2D] transition duration-200 siemreap-regular" required>
+                           class="w-full bg-white border-gray-300 rounded-3xl py-2 px-4 shadow-sm focus:outline-none focus:border-[#1E3B2D] focus:ring-1 focus:ring-[#1E3B2D] transition duration-200 siemreap-regular">
                      @error('phone') <p class="mt-1 text-red-600 text-sm">{{ $message }}</p> @enderror
                   </div>
 

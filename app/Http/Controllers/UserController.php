@@ -22,20 +22,20 @@ class UserController extends Controller
             });
         }
 
-        $users = $query->paginate(8)->withQueryString();
+        $users = $query->paginate(10)->withQueryString();
 
         // Create a generic delete confirmation that will be triggered by data-confirm-delete
         $deleteConfig = [
-            'title' => 'Are you sure to delete this user?',
+            'title' => 'តើអ្នកប្រាកដទេថានឹងលុបសមាជិកនេះ?',
             'html' => '<div style="text-align: left;">
-                        <p style="margin-bottom: 10px; text-align: center;">You are will delete the following user</p>
+                        <p style="margin-bottom: 10px; text-align: center;">អ្នកកំពុងត្រៀមលុប</p>
                     </div>',
             'icon' => 'warning',
             'showCancelButton' => true,
-            'confirmButtonColor' => '#830000ff',
-            'cancelButtonColor' => '#969696ff',
-            'confirmButtonText' => 'Yes, Delete!',
-            'cancelButtonText' => 'Cancel',
+            'confirmButtonColor' => '#b50404ff',
+            'cancelButtonColor' => '#aeaeaeff',
+            'confirmButtonText' => 'បាទ/​ចាស, លុប!',
+            'cancelButtonText' => 'បោះបង់',
             'reverseButtons' => true,
             'focusCancel' => true
         ];
@@ -51,12 +51,19 @@ class UserController extends Controller
         return view('users.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
+    
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'required|string|min:10',
+            'phone' => 'required|string|min:9',
+        ],[
+            'phone.min' => 'លេខទូរស័ព្ទត្រូវមានយ៉ាងតិច ៩ ខ្ទង់',
+            'email.unique' => 'អ៊ីមែលនេះបានប្រើរួចហើយ',
+            'full_name.required' => 'សូមបញ្ចូលឈ្មោះពេញ',
+            'email.required' => 'សូមបញ្ចូលអ៊ីមែល',
+            'phone.required' => 'សូមបញ្ចូលលេខទូរស័ព្ទ'
         ]);
 
         User::create([
@@ -65,8 +72,11 @@ class UserController extends Controller
             'phone' => $validated['phone'],
             'role' => 'member'
         ]);
+        $userName = $user->full_name ?? $validated['full_name'];
 
-        Alert::success('Success', 'User created successfully');
+        Alert::success('ជោគជ័យ', ' សមាជិក ' . $userName . ' ត្រូវបានបង្កើតដោយជោគជ័យ!')
+             ->persistent(false)
+             ->autoClose(2000);
         return redirect()->route('users.userList');
     }
 
@@ -82,14 +92,23 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        $userName = $user->full_name;
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'required|string|min:10'
+            'phone' => 'required|string|min:9'
+        ],[
+            'phone.min' => 'លេខទូរស័ព្ទត្រូវមានយ៉ាងតិច ៩ ខ្ទង់',
+            'email.unique' => 'អ៊ីមែលនេះបានប្រើរួចហើយ',
+            'full_name.required' => 'សូមបញ្ចូលឈ្មោះពេញ',
+            'email.required' => 'សូមបញ្ចូលអ៊ីមែល',
+            'phone.required' => 'សូមបញ្ចូលលេខទូរស័ព្ទ'
         ]);
         $user->update($validated);
 
-        Alert::success('Success', 'User updated successfully');
+        Alert::success('ជោគជ័យ', 'សមាជិក ' . $userName . ' ត្រូវបានកែប្រែដោយជោគជ័យ!')
+             ->persistent(false)
+             ->autoClose(2000);
         return redirect()->route('users.userList');
     }
 
@@ -98,7 +117,7 @@ class UserController extends Controller
         $userName = $user->full_name;
         $user->delete();
 
-        Alert::success('Success!', "Deleted successfully!")
+        Alert::success('ជោគជ័យ!', "សមាជិក $userName ត្រូវបានលុបរួចរាល់!")
              ->persistent(false)
              ->autoClose(2000);
 
