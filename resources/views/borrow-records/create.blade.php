@@ -17,21 +17,22 @@
             </a>
         </div>
 
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
+
         <form action="{{ route('borrow-records.store') }}" method="POST" class="bg-white p-6 rounded-xl shadow-sm">
             @csrf
 
             <div class="grid grid-cols-2 gap-6">
                 <!-- User -->
                 <div>
-                    <label for="user_id" class="block mb-2 text-md font-semibold text-gray-700 siemreap-regular">សមាជិក (User)</label>
-                    <select name="user_id" id="user_id" class="user-select w-full bg-white py-2 border border-gray-300 rounded-full px-4 focus:outline-none focus:border-green-800 transition duration-200 siemreap-regular text-md">
-                        <option value="" disabled selected>-- ជ្រើសរើស --</option>
-                        @foreach($users as $user)
-                            <option value="{{ $user->user_id }}" {{ old('user_id') == $user->user_id ? 'selected' : '' }}>
-                                {{ $user->user_id }} - {{ $user->full_name}}
-                            </option>
-                        @endforeach
-                    </select>
+                    <label for="user_search" class="block mb-2 text-md font-semibold text-gray-700 siemreap-regular">លេខសមាជិក</label>
+                    <input type="text" id="user_search" class="w-full bg-white py-2 border border-gray-300 rounded-full px-4 focus:outline-none focus:border-green-800 transition duration-200 siemreap-regular text-md"​ placeholder="លេខសមាជិក">
+                    <input type="hidden" name="user_id" id="user_id">
                     @error('user_id')
                     <span class="text-red-500 text-sm siemreap-regular">{{ $message }}</span>
                     @enderror
@@ -39,15 +40,9 @@
 
                 <!-- Book -->
                 <div>
-                    <label for="book_id" class="block mb-2 text-md font-semibold text-gray-700 siemreap-regular">សៀវភៅ (Book)</label>
-                    <select name="book_id" id="book_id" class="w-full bg-white py-2 border border-gray-300 rounded-full px-4 focus:outline-none focus:border-green-800 transition duration-200 siemreap-regular text-md">
-                        <option value="" disabled selected>-- ជ្រើសរើស --</option>
-                        @foreach($books as $book)
-                            <option value="{{ $book->book_id }}" {{ old('book_id') == $book->book_id ? 'selected' : '' }}>
-                                {{ $book->title }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <label for="book_search" class="block mb-2 text-md font-semibold text-gray-700 siemreap-regular">សៀវភៅ</label>
+                    <input type="text" id="book_search" class="w-full bg-white py-2 border border-gray-300 rounded-full px-4 focus:outline-none focus:border-green-800 transition duration-200 siemreap-regular text-md" placeholder="ស្វែងរកសៀវភៅ">
+                    <input type="hidden" name="book_id" id="book_id">
                     @error('book_id')
                     <span class="text-red-500 text-sm siemreap-regular">{{ $message }}</span>
                     @enderror
@@ -125,30 +120,66 @@
 
 @push('scripts')
     <script>
-        // Ensure jQuery is loaded
-        if (typeof jQuery === 'undefined') {
-            console.error('jQuery is not loaded. Please include it in your layout.');
-        }
-
         $(document).ready(function() {
-            // Initialize Select2 for user dropdown
-            if ($.fn.select2) {
-                $('.user-select').select2({
-                    placeholder: "-- ជ្រើសរើស --",
-                    allowClear: true,
-                    width: '100%'
-                });
-            } else {
-                console.error('Select2 is not loaded. Please include the Select2 library.');
-            }
+            $("#user_search").autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        url: "{{ route('users.search') }}",
+                        data: {
+                            q: request.term
+                        },
+                        dataType: "json",
+                        cache: false,
+                        success: function(data) {
+                            response($.map(data, function(item) {
+                                return {
+                                    label: item.text,
+                                    value: item.id
+                                };
+                            }));
+                        }
+                    });
+                },
+                minLength: 1,
+                select: function(event, ui) {
+                    $('#user_id').val(ui.item.value);
+                    $('#user_search').val(ui.item.label);
+                    return false;
+                }
+            });
+
+            $("#book_search").autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        url: "{{ route('books.search') }}",
+                        data: {
+                            q: request.term
+                        },
+                        dataType: "json",
+                        cache: false,
+                        success: function(data) {
+                            response($.map(data, function(item) {
+                                return {
+                                    label: item.text,
+                                    value: item.id
+                                };
+                            }));
+                        }
+                    });
+                },
+                minLength: 1,
+                select: function(event, ui) {
+                    $('#book_id').val(ui.item.value);
+                    $('#book_search').val(ui.item.label);
+                    return false;
+                }
+            });
 
             // Function to calculate and update check-in date (check-out date + 14 days)
             function updateCheckIn() {
-                console.log('updateCheckIn called'); // Debug: Confirm function runs
                 let checkOutInput = $('#check_out_date').val();
                 let checkInDateDisplay = $('#check_in_date_display');
                 let checkInDateHidden = $('#check_in_date');
-                console.log('Check-out input:', checkOutInput); // Debug: Log input value
 
                 if (checkOutInput) {
                     let checkOut = new Date(checkOutInput);
@@ -158,16 +189,13 @@
                         let month = String(checkOut.getMonth() + 1).padStart(2, '0');
                         let day = String(checkOut.getDate()).padStart(2, '0');
                         let formatted = `${year}-${month}-${day}`;
-                        console.log('Calculated check-in:', formatted); // Debug: Log calculated date
                         checkInDateDisplay.val(formatted);
                         checkInDateHidden.val(formatted);
                     } else {
-                        console.log('Invalid check-out date'); // Debug: Log invalid date
                         checkInDateDisplay.val('');
                         checkInDateHidden.val('');
                     }
                 } else {
-                    console.log('No check-out date, using default'); // Debug: Log default case
                     let defaultDate = new Date();
                     defaultDate.setDate(defaultDate.getDate() + 14);
                     let year = defaultDate.getFullYear();
@@ -180,12 +208,10 @@
             }
 
             // Run on page load
-            console.log('Page loaded, running updateCheckIn'); // Debug: Confirm page load
             updateCheckIn();
 
             // Update in real-time on input or change
             $('#check_out_date').on('input change', function() {
-                console.log('Check-out date changed:', $(this).val()); // Debug: Log change
                 updateCheckIn();
             });
         });

@@ -40,8 +40,7 @@
                 <th class="px-6 py-3 text-left text-md font-semibold text-gray-700 uppercase tracking-wider siemreap-regular">អ្នកនិពន្ធ</th>
                 <th class="px-6 py-3 text-left text-md font-semibold text-gray-700 uppercase tracking-wider siemreap-regular">ថ្ងៃខ្ចី</th>
                 <th class="px-6 py-3 text-left text-md font-semibold text-gray-700 uppercase tracking-wider siemreap-regular">ថ្ងៃសង</th>
-                <th class="px-6 py-3 text-left text-md font-semibold text-gray-700 uppercase tracking-wider siemreap-regular">ស្ថានភាព</th>
-                <th class="px-6 py-3 text-left text-md font-semibold text-gray-700 uppercase tracking-wider siemreap-regular">សកម្មភាព</th>
+                <th class="px-6 py-3 text-left text-md font-semibold text-gray-700 uppercase tracking-wider siemreap-regular">កែប្រែទិន្នន័យ</th>
             </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -53,21 +52,25 @@
                     <td class="px-6 py-4 text-sm text-gray-700 siemreap-regular">{{ $record->book->authors->pluck('author_name')->join(', ')}}</td>
                     <td class="px-6 py-4 text-sm text-gray-700 siemreap-regular">{{ $record->check_out_date }}</td>
                     <td class="px-6 py-4 text-sm text-gray-700 siemreap-regular">{{ $record->check_in_date }}</td>
-                    <td class="px-6 py-4 text-sm">
-                        <span class="px-3 py-1 rounded-full text-white text-xs
-                            {{ $record->borrow_status == 'borrowed' ? 'bg-yellow-600' : 'bg-green-900' }}">
-                            {{ $record->borrow_status }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm font-medium">
-                        <div class="flex items-center space-x-3">
-                            <!-- Fix: Update route names -->
-                            <form method="POST" action="{{ route('borrow-records.edit', $record->br_id) }}"
-                               class="cursor-pointer text-green-800 hover:text-green-900 bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded-lg flex gap-2">
-                                <a class="siemreap-regular" href="{{route('borrow-records.edit', $record->br_id)}}">កែប្រែ</a>
+                    
+                    <td class="px-6 ​py-4 flex items-center justify-center text-sm font-medium">
+                        @if($record->borrow_status == 'checked_out' || $record->borrow_status == 'over_due')
+                            <!-- Return Button -->
+                            <form action="{{ route('borrow-records.return', $record->br_id) }}" method="POST" onsubmit="return confirm('តើអ្នកចង់សងសៀវភៅនេះមែនទេ?')">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="px-3 py-1 bg-green-500 text-white rounded">សង</button>
                             </form>
-                           
-                        </div>
+
+                            <!-- Extend Button -->
+                            <form action="{{ route('borrow-records.extend', $record->br_id) }}" method="POST" onsubmit="return confirm('តើអ្នកចង់បន្តអានសៀវភៅនេះមែនទេ?')">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="px-3 py-1 bg-yellow-500 text-white rounded">បន្តអាន</button>
+                            </form>
+                        @elseif($record->borrow_status == 'checked_in')
+                            <span class="px-3 py-1 bg-gray-400 text-white rounded">បានសង</span>
+                        @endif
                     </td>
                 </tr>
             @endforeach

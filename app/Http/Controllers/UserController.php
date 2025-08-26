@@ -153,4 +153,23 @@ class UserController extends Controller
 
         return $pdf->download('users-' . $printOption . '.pdf');
     }
+
+    public function search(Request $request)
+    {
+        $search = $request->q;
+        $users = User::where('full_name', 'like', "%{$search}%")
+                       ->orWhere('email', 'like', "%{$search}%")
+                       ->orWhere('user_id', 'like', "%{$search}%")
+                       ->get();
+
+        $response = [];
+        foreach($users as $user){
+            $response[] = [
+                "id" => $user->user_id,
+                "text" => $user->full_name . ' - ' . $user->email
+            ];
+        }
+
+        return response()->json($response);
+    }
 }

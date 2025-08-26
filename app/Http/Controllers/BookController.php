@@ -108,7 +108,7 @@ class BookController extends Controller
             'isbn' => 'required|string|unique:books,isbn',
             'category_id' => 'required|integer|exists:categories,category_id',
             'author_name' => 'required|string',
-            'published_year' => 'required|digits:4|integer',
+            'published_year' => 'required|digits:4|integer|min:1901|max:2155',
             'available_stock' => 'required|integer|min:0',
         ], [
             'title.required' => 'សូមបញ្ចូលចំណងជើងសៀវភៅ',
@@ -129,6 +129,8 @@ class BookController extends Controller
             'published_year.required' => 'សូមបញ្ចូលឆ្នាំបោះពុម្ព',
             'published_year.digits' => 'ឆ្នាំបោះពុម្ពត្រូវតែមាន 4 តួ',
             'published_year.integer' => 'ឆ្នាំបោះពុម្ពត្រូវតែជាចំនួន',
+            'published_year.min' => 'ឆ្នាំបោះពុម្ពត្រូវតែចាប់ពីឆ្នាំ 1901',
+            'published_year.max' => 'ឆ្នាំបោះពុម្ពត្រូវតែតិចជាងឆ្នាំ 2155',
         
             'available_stock.required' => 'សូមបញ្ចូលស្តុកសៀវភៅ',
             'available_stock.integer' => 'ស្តុកត្រូវតែជាចំនួនគត់',
@@ -139,7 +141,7 @@ class BookController extends Controller
         // 1️⃣ Clean & split author names
         $authorsInput = $request->author_name; // e.g., "Josh Kim & Malita Roush"
         $cleaned = str_replace(['&', '.', '/', ','], '', $authorsInput);
-        $authorParts = preg_split('/\s+/', $cleaned, -1, PREG_SPLIT_NO_EMPTY);
+        $authorParts = preg_split('/S+/', $cleaned, -1, PREG_SPLIT_NO_EMPTY);
 
         // 2️⃣ Loop through and find/create authors
         $authorIds = [];
@@ -225,11 +227,21 @@ class BookController extends Controller
             ]));
     }
 
-    
+    public function search(Request $request)
+    {
+        $search = $request->q;
+        $books = Book::where('title', 'like', "%{$search}%")
+                       ->orWhere('isbn', 'like', "%{$search}%")
+                       ->get();
 
+        $response = [];
+        foreach($books as $book){
+            $response[] = [
+                "id" => $book->book_id,
+                "text" => $book->title
+            ];
+        }
 
-
-
-    
-
+        return response()->json($response);
+    }
 }

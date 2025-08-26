@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BorrowController;
+use App\Http\Controllers\userBorrow;
 
 
 Route::view('/', 'welcome');
@@ -23,6 +24,7 @@ Route::middleware([RoleMiddleware::class.':admin'])->group(function () {
         Route::get('/', [UserController::class, 'userList'])->name('userList');
         Route::get('/create', [UserController::class, 'create'])->name('create');
         Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::get('/search', [UserController::class, 'search'])->name('search');
 
         Route::get('/print-preview', [UserController::class, 'printPreview'])->name('print.preview');
         Route::get('/print-pdf', [UserController::class, 'printPdf'])->name('print.pdf');
@@ -38,6 +40,7 @@ Route::middleware([RoleMiddleware::class.':admin'])->group(function () {
         Route::get('/', [BookController::class, 'bookList'])->name('bookList');
         Route::get('/create', [BookController::class, 'create'])->name('create');
         Route::post('/store', [BookController::class, 'store'])->name('store');
+        Route::get('/search', [BookController::class, 'search'])->name('search');
 
         // Show the edit form
         Route::get('/{book}/edit', [BookController::class, 'edit'])->name('edit');
@@ -51,10 +54,8 @@ Route::middleware([RoleMiddleware::class.':admin'])->group(function () {
         Route::get('/', [BorrowController::class, 'index'])->name('borrow-records.index');
         Route::get('/create', [BorrowController::class, 'create'])->name('borrow-records.create');
         Route::post('/', [BorrowController::class, 'store'])->name('borrow-records.store');
-        Route::get('borrow-records/{br_id}/edit', [BorrowController::class, 'edit'])->name('borrow-records.edit');
-        Route::put('borrow-records/{br_id}', [BorrowController::class, 'update'])->name('borrow-records.update');
-        Route::delete('/{br_id}', [BorrowController::class, 'destroy'])->name('borrow-records.delete');
-        Route::delete('/{br_id}', [BorrowController::class, 'destroy'])->name('borrow-records.destroy');
+        Route::put('/borrow-records/{id}/return', [BorrowController::class, 'returnBook'])->name('borrow-records.return');
+            Route::put('/borrow-records/{id}/extend', [BorrowController::class, 'extendBook'])->name('borrow-records.extend');
 
     });
 
@@ -64,7 +65,9 @@ Route::middleware([RoleMiddleware::class.':admin'])->group(function () {
 
 
 Route::middleware([RoleMiddleware::class.':member'])->group(function () {
-    Route::view('/member', 'member')->name('member');
+    Route::get('/member', function () {
+        return view('member');
+    })->name('member');
 
 
 });

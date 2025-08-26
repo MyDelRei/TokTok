@@ -6,7 +6,8 @@ use App\Models\BorrowRecord;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Carbon\Carbon; // <-- for date calculations
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class BorrowController extends Controller
 {
@@ -32,27 +33,11 @@ class BorrowController extends Controller
             });
         }
 
-        $records = BorrowRecord::with(['book.author', 'user'])->get();
+        $records = BorrowRecord::with(['book.authors', 'user'])->get();
 
         // SweetAlert delete confirmation
-        $deleteConfig = [
-            'title' => 'តើអ្នកប្រាកដថាចង់លុបទិន្នន័យខ្ចីសៀវភៅមែនទេ?',
-            'html' => '<div style="text-align: left;">
-                          <p style="margin-bottom: 10px; text-align: center;">
-                          អ្នកកំពុងត្រៀមលុបទិន្នន័យខ្ចីសៀវភៅនេះ
-                          </p>
-                      </div>',
-            'icon' => 'warning',
-            'showCancelButton' => true,
-            'confirmButtonColor' => '#830000ff',
-            'cancelButtonColor' => '#969696ff',
-            'confirmButtonText' => 'បាទ/ចាស, លុប!',
-            'cancelButtonText' => 'បោះបង់',
-            'reverseButtons' => true,
-            'focusCancel' => true
-        ];
-
-        session(['alert.delete' => json_encode($deleteConfig)]);
+     
+        // session(['alert.delete' => json_encode($deleteConfig)]);
 
         return view('borrow-records.index', compact('records'));
     }
@@ -69,7 +54,6 @@ class BorrowController extends Controller
 
     public function store(Request $request)
     {
-        // validate input (remove check_in_date, it will be auto)
         $request->validate([
             'user_id'        => 'required',
             'book_id'        => 'required',
@@ -77,20 +61,29 @@ class BorrowController extends Controller
             'check_out_date' => 'required|date',
         ]);
 
-        // auto set check_in_date = check_out_date + 7 days
-        $checkOutDate = Carbon::parse($request->check_out_date);
-        $checkInDate  = $checkOutDate->copy()->addDays(7);
+        DB::transaction(function () use ($request) {
+            $book = Book::findOrFail($request->book_id);
 
-        // create record
-        BorrowRecord::create([
-            'user_id'        => $request->user_id,
-            'book_id'        => $request->book_id,
-            'quantity'       => $request->quantity,
-            'borrow_status'  => 'checked_out',
-            'check_out_date' => $checkOutDate,
-            'check_in_date'  => $checkInDate,
-            'penalty'        => 0, // default 0
-        ]);
+            if ($book->available_stock < $request->quantity) {
+                return redirect()->back()->with('error', 'Not enough books in stock.')->withInput();
+            }
+
+            $book->available_stock -= $request->quantity;
+            $book->save();
+
+            $checkOutDate = Carbon::parse($request->check_out_date);
+            $checkInDate  = $checkOutDate->copy()->addDays(14);
+
+            BorrowRecord::create([
+                'user_id'        => $request->user_id,
+                'book_id'        => $request->book_id,
+                'quantity'       => $request->quantity,
+                'borrow_status'  => 'checked_out',
+                'check_out_date' => $checkOutDate,
+                'check_in_date'  => $checkInDate,
+                'penalty'        => 0,
+            ]);
+        });
 
         return redirect()->route('borrow-records.index')
                          ->with('success', 'Borrow record created successfully!');
@@ -100,72 +93,35 @@ class BorrowController extends Controller
     /**
      * Edit borrow record.
      */
-    public function edit($br_id)
-    {
-        $borrowRecord = BorrowRecord::findOrFail($br_id);
-        $users = User::all();
-        $books = Book::all();
+   public function returnBook($id)
+{
+    $record = BorrowRecord::findOrFail($id);
 
-        return view('borrow-records.edit', compact('borrowRecord', 'users', 'books'));
-    }
+    DB::transaction(function () use ($record) {
+        $book = Book::find($record->book_id);
 
-    /**
-     * Update borrow record.
-     */
-    public function update(Request $request, $br_id)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,user_id',
-            'book_id' => 'required|exists:books,book_id',
-            'quantity' => 'required|integer|min:1',
-            'check_out_date' => 'required|date',
-            'borrow_status' => 'required|in:checked_out,checked_in,over_due',
-        ]);
-
-        $borrowRecord = BorrowRecord::findOrFail($br_id);
-
-        // auto set check_in_date = check_out_date + 7 days
-        $checkOutDate = Carbon::parse($request->check_out_date);
-        $checkInDate  = $checkOutDate->copy()->addDays(7);
-
-        // calculate penalty if returned after check_in_date
-        $penalty = 0;
-        if ($request->borrow_status === 'checked_in') {
-            $actualReturnDate = Carbon::now();
-            if ($actualReturnDate->gt($checkInDate)) {
-                $daysOverdue = $actualReturnDate->diffInDays($checkInDate);
-                $penalty = $daysOverdue * 0.5;
-            }
+        if ($book) {
+            $book->available_stock += $record->quantity;
+            $book->save();
         }
 
-        $borrowRecord->update([
-            'user_id'        => $validated['user_id'],
-            'book_id'        => $validated['book_id'],
-            'quantity'       => $validated['quantity'],
-            'check_out_date' => $checkOutDate,
-            'check_in_date'  => $checkInDate,
-            'borrow_status'  => $validated['borrow_status'],
-            'penalty'        => $penalty,
-        ]);
+        $record->check_in_date = now();
+        $record->borrow_status = 'checked_in';
+        $record->save();
+    });
 
-        return redirect()
-            ->route('borrow-records.index')
-            ->with('success', 'Borrow record updated successfully.');
-    }
+    return redirect()->back()->with('success', 'សៀវភៅត្រូវបានសងវិញរួចរាល់!');
+}
 
-    /**
-     * Delete borrow record.
-     */
-    public function destroy($br_id)
-    {
-        $record = BorrowRecord::findOrFail($br_id);
-        $record->delete();
+public function extendBook($id)
+{
+    $record = BorrowRecord::findOrFail($id);
 
-        return redirect()->route('borrow-records.index')->with('alert.config', json_encode([
-            'title' => 'បានលុបទិន្នន័យខ្ចីសៀវភៅ!',
-            'text' => "ការខ្ចីសៀវភៅ #{$record->br_id} ត្រូវបានលុបដោយជោគជ័យ",
-            'icon' => 'success',
-            'confirmButtonText' => 'OK'
-        ]));
-    }
+    // extend check_in_date + 7 days
+    $record->check_in_date = \Carbon\Carbon::parse($record->check_in_date)->addDays(7);
+    $record->save();
+
+    return redirect()->back()->with('success', 'បានបន្តអានសៀវភៅនេះរួចរាល់!');
+}
+
 }
