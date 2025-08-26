@@ -23,11 +23,12 @@ return new class extends Migration
 
 
             $table->integer('quantity')->default(1);
-            $table->enum('borrow_status', ['checked_out', 'checked_in', 'over_due'])->default('check_out');
-            $table->date('check_out_date');
+            $table->enum('borrow_status', ['checked_out', 'checked_in', 'over_due'])->default('checked_out');
+           $table->date('check_out_date');
             $table->date('check_in_date')->nullable();
+            $table->decimal('penalty', 8, 2)->default(0);
 
-            // find fee column ផាកវិន័យ ( data type double )
+
             $table->timestamps();
         });
     }

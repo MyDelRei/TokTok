@@ -1,10 +1,13 @@
 <?php
 
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
-use App\Http\Middleware\RoleMiddleware;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BorrowController;
+
 
 Route::view('/', 'welcome');
 
@@ -28,14 +31,14 @@ Route::middleware([RoleMiddleware::class.':admin'])->group(function () {
         Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
         Route::put('/{user}', [UserController::class, 'update'])->name('update');
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
-        
+
     });
 
     Route::prefix('books')->name('books.')->group(function () {
         Route::get('/', [BookController::class, 'bookList'])->name('bookList');
         Route::get('/create', [BookController::class, 'create'])->name('create');
         Route::post('/store', [BookController::class, 'store'])->name('store');
-    
+
         // Show the edit form
         Route::get('/{book}/edit', [BookController::class, 'edit'])->name('edit');
         // Update the book stock
@@ -43,12 +46,25 @@ Route::middleware([RoleMiddleware::class.':admin'])->group(function () {
         // Delete the book
         Route::delete('/{book}', [BookController::class, 'destroy'])->name('destroy');
     });
-    
+
+    Route::prefix('borrow-records')->group(function () {
+        Route::get('/', [BorrowController::class, 'index'])->name('borrow-records.index');
+        Route::get('/create', [BorrowController::class, 'create'])->name('borrow-records.create');
+        Route::post('/', [BorrowController::class, 'store'])->name('borrow-records.store');
+        Route::get('borrow-records/{br_id}/edit', [BorrowController::class, 'edit'])->name('borrow-records.edit');
+        Route::put('borrow-records/{br_id}', [BorrowController::class, 'update'])->name('borrow-records.update');
+        Route::delete('/{br_id}', [BorrowController::class, 'destroy'])->name('borrow-records.delete');
+        Route::delete('/{br_id}', [BorrowController::class, 'destroy'])->name('borrow-records.destroy');
+
+    });
+
+
+
 });
 
 
 Route::middleware([RoleMiddleware::class.':member'])->group(function () {
     Route::view('/member', 'member')->name('member');
-   
+
 
 });
