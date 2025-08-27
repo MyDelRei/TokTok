@@ -1,0 +1,79 @@
+name: Laravel CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1️⃣ Checkout repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 2️⃣ Setup PHP 8.2 (compatible with Laravel 11)
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, intl, bcmath, xml, ctype, curl, json, mysqli
+        coverage: xdebug
+
+    # 3️⃣ Cache Composer dependencies
+    - name: Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          vendor
+          ~/.composer/cache
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    # 4️⃣ Install dependencies
+    - name: Install dependencies
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+    # 5️⃣ Copy .env for testing
+    - name: Copy .env
+      run: cp .env.example .env
+
+    # 6️⃣ Generate app key
+    - name: Generate app key
+      run: php artisan key:generate
+
+    # 7️⃣ Run migrations for testing
+    - name: Run migrations
+      run: php artisan migrate --env=testing --no-interaction
+
+    # 8️⃣ Run Laravel tests
+    - name: Run PHPUnit Tests
+      run: vendor/bin/phpunit --coverage-text
+
+    # 9️⃣ Optional: Lint & static analysis
+    - name: PHP CS Fixer
+      run: vendor/bin/php-cs-fixer fix --dry-run --diff || true
+
+    - name: PHPStan
+      run: vendor/bin/phpstan analyse || true
+          # 6️⃣ Generate app key
+    - name: Generate app key
+      run: php artisan key:generate
+
+    # 6️⃣.5 Create SQLite database file for testing
+    - name: Create SQLite database
+      run: |
+        mkdir -p database
+        touch database/database.sqlite
+
+    # 7️⃣ Run migrations for testing
+    - name: Run migrations
+      run: php artisan migrate --env=testing --no-interaction
+
+    # 8️⃣ Run Laravel tests
+    - name: Run PHPUnit Tests
+      run: vendor/bin/phpunit --coverage-text
+
