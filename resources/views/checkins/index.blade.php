@@ -77,7 +77,7 @@
 
             function checkStatus() {
                 if (userIdInput.value && bookIdInput.value) {
-                    fetch('{{ route("checkins.check-status") }}', {
+                    fetch('{{ route("checkins.checkStatus") }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

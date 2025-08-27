@@ -33,7 +33,7 @@ class AuthController extends Controller
         if ($user->role === 'admin') {
             return redirect()->route('dashboard');
         } else if ($user->role === 'member') {
-            return redirect()->route('member');
+            return redirect()->route('checkins.index');
         }
 
         Alert::error('Login Failed', 'Role not recognized');

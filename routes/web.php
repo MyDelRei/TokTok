@@ -1,6 +1,9 @@
 <?php
 
 
+use App\Http\Controllers\CheckinController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GlobalSearchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\AuthController;
@@ -10,15 +13,15 @@ use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\userBorrow;
 
 
-Route::view('/', 'welcome');
+Route::get('/global-search', [GlobalSearchController::class, 'search'])->name('global.search');
 
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Protected routes by role
 Route::middleware([RoleMiddleware::class.':admin'])->group(function () {
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'userList'])->name('userList');
@@ -64,10 +67,11 @@ Route::middleware([RoleMiddleware::class.':admin'])->group(function () {
 });
 
 
-Route::middleware([RoleMiddleware::class.':member'])->group(function () {
-    Route::get('/member', function () {
-        return view('member');
-    })->name('member');
-
-
+Route::middleware([RoleMiddleware::class . ':member'])->group(function () {
+    // Checkin routes
+    // Route::prefix('checkins')->name('checkins.')->group(function () {
+    //     Route::get('/', [CheckinController::class, 'index'])->name('index');       // GET checkins page
+    //     Route::post('/', [CheckinController::class, 'store'])->name('store');      // POST return book
+    //     Route::post('/status', [CheckinController::class, 'checkStatus'])->name('checkStatus'); // AJAX check status
+    // });
 });

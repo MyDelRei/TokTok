@@ -1,286 +1,171 @@
 @extends('app')
 
 @section('title', 'Admin Dashboard')
-
 @section('content')
-    <!-- Main Dashboard Container -->
-    <div class="max-w-7xl mx-auto space-y-8">
+<div class="overflow-y-auto max-h-[900px] siemreap-regular max-w-7xl mx-auto space-y-6 p-4">
 
-        <!-- Page Header -->
-        <header class="pb-4">
-            <h1 class="text-4xl font-bold text-gray-800">Admin Dashboard</h1>
-        </header>
+    <!-- Page Header -->
+    <header class="pb-4">
+        <h1 class="text-4xl font-bold text-gray-800">កម្រងទិន្នន័យ</h1>
+    </header>
 
-        <!-- Stat Cards Section -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-            <!-- Card 1 -->
-            <div class="bg-white rounded-xl shadow-md p-6 text-center">
-                <p class="text-gray-500 text-sm uppercase font-semibold">Today's Sales</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2">1,245</p>
-            </div>
-            <!-- Card 2 -->
-            <div class="bg-white rounded-xl shadow-md p-6 text-center">
-                <p class="text-gray-500 text-sm uppercase font-semibold">New Users</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2">345</p>
-            </div>
-            <!-- Card 3 -->
-            <div class="bg-white rounded-xl shadow-md p-6 text-center">
-                <p class="text-gray-500 text-sm uppercase font-semibold">Total Revenue</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2">$25,300</p>
-            </div>
-            <!-- Card 4 -->
-            <div class="bg-white rounded-xl shadow-md p-6 text-center">
-                <p class="text-gray-500 text-sm uppercase font-semibold">Active Orders</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2">678</p>
-            </div>
-            <!-- Card 5 -->
-            <div class="bg-white rounded-xl shadow-md p-6 text-center">
-                <p class="text-gray-500 text-sm uppercase font-semibold">Support Tickets</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2">12</p>
-            </div>
-            <!-- Card 6 -->
-            <div class="bg-white rounded-xl shadow-md p-6 text-center">
-                <p class="text-gray-500 text-sm uppercase font-semibold">Page Views</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2">8,901</p>
-            </div>
+    <!-- Dashboard Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-md shadow-md p-6">
+            <p class="text-gray-500 text-sm uppercase font-semibold">សៀវភៅកំពុងខ្ចី</p>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $borrowBooks }}</p>
         </div>
-
-        <!-- Charts and Tables Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-            <!-- Sales Graph Card -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Sales Performance</h2>
-                <div class="chart-container">
-                    <canvas id="salesChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Recent Orders Table Card -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Recent Orders</h2>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <!-- Sample Data Row 1 -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#45789</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Wireless Earbuds</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">John Doe</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-10-26</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$120.00</td>
-                            </tr>
-                            <!-- Sample Data Row 2 -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#45790</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Smart Watch</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jane Smith</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-10-25</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$250.00</td>
-                            </tr>
-                            <!-- Sample Data Row 3 -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#45791</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Gaming Mouse</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Peter Jones</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Cancelled</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-10-25</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$75.00</td>
-                            </tr>
-                            <!-- Sample Data Row 4 -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#45792</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Laptop Sleeve</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mary Williams</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-10-24</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$30.00</td>
-                            </tr>
-                            <!-- Sample Data Row 5 -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#45793</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Bluetooth Speaker</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">David Brown</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-10-24</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$95.00</td>
-                            </tr>
-                            <!-- Sample Data Row 6 -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#45794</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Webcam</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Michael Lee</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-10-23</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$60.00</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
+        <div class="bg-white rounded-md shadow-md p-6">
+            <p class="text-gray-500 text-sm uppercase font-semibold">សៀវភៅបានត្រឡប់</p>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $checkInBooks }}</p>
         </div>
+        <div class="bg-white rounded-md shadow-md p-6">
+            <p class="text-gray-500 text-sm uppercase font-semibold">លើសកាលកំណត់</p>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $overdue }}</p>
+        </div>
+        <div class="bg-white rounded-md shadow-md p-6">
+            <p class="text-gray-500 text-sm uppercase font-semibold">សៀវភៅបាត់</p>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $lostBooks }}</p>
+        </div>
+        <div class="bg-white rounded-md shadow-md p-6">
+            <p class="text-gray-500 text-sm uppercase font-semibold">សៀវភៅសរុប</p>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalBooks }}</p>
+        </div>
+        <div class="bg-white rounded-md shadow-md p-6">
+            <p class="text-gray-500 text-sm uppercase font-semibold">អ្នកទស្សនា​សរុប</p>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalVisitors }}</p>
+        </div>
+        <div class="bg-white rounded-md shadow-md p-6">
+            <p class="text-gray-500 text-sm uppercase font-semibold">សមាជិក</p>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalMembers }}</p>
+        </div>
+        <div class="bg-white rounded-md shadow-md p-6">
+            <p class="text-gray-500 text-sm uppercase font-semibold">ប្រាក់ចំណូល</p>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ number_format($revenue) }} ៛</p>
+        </div>
+    </div>
 
-        <!-- Another section for other data, similar to the image -->
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Borrow Record Chart -->
         <div class="bg-white rounded-xl shadow-md p-6">
-             <h2 class="text-2xl font-semibold text-gray-800 mb-4">Product Inventory</h2>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product ID</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <!-- Sample Data Row -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#P001</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Laptop Pro</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronics</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">150</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$1200.00</td>
-                            </tr>
-                             <!-- Sample Data Row -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#P002</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mechanical Keyboard</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Accessories</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">250</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$90.00</td>
-                            </tr>
-                            <!-- Sample Data Row -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#P003</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4K Monitor</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronics</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$450.00</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">កំណត់ត្រាការខ្ចីសៀវភៅ</h2>
+            <canvas id="borrowRecord" class="w-full h-64"></canvas>
+        </div>
+
+        <!-- Overdue Table -->
+        <div class="bg-white rounded-xl shadow-md p-6 overflow-x-auto">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">លើសកាលកំណត់</h2>
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">សមាជិក#</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">សៀវភៅ</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">លេខ ISBN</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ស្ថានភាព</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ពិន័យ</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($overdueRecords as $record)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">#{{ $record->user->user_id }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ $record->book->title }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ $record->book->isbn }}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">លើសកាលកំណត់</span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">${{ number_format($record->penalty, 2) }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center text-gray-500">មិនមានកំណត់ត្រាលើសកាលកំណត់</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
     </div>
+
+    <!-- Check-Out Transactions Table -->
+    <div class="bg-white rounded-xl shadow-md p-6 overflow-x-auto">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">ប្រតិបត្តិការចេញសៀវភៅ</h2>
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">សមាជិក #</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ឈ្មោះសមាជិក</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ចំណងជើង</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ប្រភេទ</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">លេខ ISBN</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">កាលបរិច្ឆេទចេញសៀវភៅ</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">កាលបរិច្ឆេទត្រឡប់</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @forelse($checkoutRecords as $record)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900">#{{ $record->user->user_id }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ $record->user->full_name }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ $record->book->title }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ $record->book->category->category_name ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ $record->book->isbn }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ \Carbon\Carbon::parse($record->check_out_date)->format('Y-m-d') }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ $record->check_in_date ? \Carbon\Carbon::parse($record->check_in_date)->format('Y-m-d') : '-' }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">មិនមានកំណត់ត្រាចេញសៀវភៅ</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+</div>
 @endsection
 
+
 @section('scripts')
-    <script>
-        // JavaScript to draw a simple line graph on the canvas
-        function drawLineChart() {
-            const canvas = document.getElementById('salesChart');
-            if (!canvas.getContext) {
-                return;
-            }
-            
-            const ctx = canvas.getContext('2d');
-            
-            // Set canvas size for high-DPI displays
-            const dpr = window.devicePixelRatio || 1;
-            const rect = canvas.parentNode.getBoundingClientRect();
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            ctx.scale(dpr, dpr);
-            
-            const width = canvas.width / dpr;
-            const height = canvas.height / dpr;
-            const padding = 40;
-            const chartWidth = width - 2 * padding;
-            const chartHeight = height - 2 * padding;
-            
-            const data = [100, 150, 200, 250, 450, 400, 350, 280, 200, 250, 300, 500];
-            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const maxVal = Math.max(...data);
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('borrowRecord').getContext('2d');
 
-            // Clear the canvas
-            ctx.clearRect(0, 0, width, height);
-
-            // Draw X and Y axes
-            ctx.beginPath();
-            ctx.moveTo(padding, padding);
-            ctx.lineTo(padding, height - padding);
-            ctx.lineTo(width - padding, height - padding);
-            ctx.strokeStyle = '#e5e7eb';
-            ctx.stroke();
-            
-            // Draw Y-axis labels and grid lines
-            const numYLabels = 5;
-            for (let i = 0; i <= numYLabels; i++) {
-                const y = height - padding - (i / numYLabels) * chartHeight;
-                ctx.fillStyle = '#6b7280';
-                ctx.fillText(Math.round((i / numYLabels) * maxVal), padding - 30, y + 5);
-                ctx.beginPath();
-                ctx.moveTo(padding, y);
-                ctx.lineTo(width - padding, y);
-                ctx.strokeStyle = '#f3f4f6';
-                ctx.stroke();
-            }
-
-            // Draw X-axis labels
-            for (let i = 0; i < labels.length; i++) {
-                const x = padding + (i / (labels.length - 1)) * chartWidth;
-                ctx.fillStyle = '#6b7280';
-                ctx.fillText(labels[i], x, height - padding + 20);
-            }
-            
-            // Draw the line graph
-            ctx.beginPath();
-            ctx.strokeStyle = '#3b82f6';
-            ctx.lineWidth = 2;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            
-            for (let i = 0; i < data.length; i++) {
-                const x = padding + (i / (data.length - 1)) * chartWidth;
-                const y = height - padding - (data[i] / maxVal) * chartHeight;
-                if (i === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @json($months),
+            datasets: [
+                {
+                    label: 'Checked Out',
+                    data: @json($checkedOutData),
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Checked In',
+                    data: @json($checkedInData),
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    tension: 0.3,
+                    fill: true
                 }
-            }
-            ctx.stroke();
-            
-            // Draw data points
-            for (let i = 0; i < data.length; i++) {
-                const x = padding + (i / (data.length - 1)) * chartWidth;
-                const y = height - padding - (data[i] / maxVal) * chartHeight;
-                ctx.fillStyle = '#3b82f6';
-                ctx.beginPath();
-                ctx.arc(x, y, 4, 0, 2 * Math.PI);
-                ctx.fill();
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
             }
         }
-
-        window.addEventListener('load', drawLineChart);
-        window.addEventListener('resize', drawLineChart);
-    </script>
+    });
+</script>
 @endsection
